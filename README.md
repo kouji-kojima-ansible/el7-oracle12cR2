@@ -35,6 +35,7 @@ cat << EOF > site.yml
     no_proxys: xxxxx.co.jp,yyyy.co.jp
     ca_url: https://xxxxxxxx.co.jp/xxx.ca(*1)
     ca_sha256: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    swap_file_path: path
   roles:
     - { role: kouji-kojima-ansible.el7-oracle12cR2 }
 EOF
