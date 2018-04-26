@@ -15,22 +15,22 @@
     - swap.file.check
 
 - name: Create 16G swap file
-  command: "dd if=/dev/zero of={{ swap_file }} bs=1G count=16"
+  shell: "dd if=/dev/zero of={{ swap_file }} bs=1G count=16"
   when: not swap_file_check.stat.exists
   tags:
     - swap.file.create
 
 - name: Change swap file permissions
-  file: path="{{ swap_file }}"
-        owner=root
-        group=root
-        mode=0600
+  file:
+    path: "{{ swap_file }}"
+    owner: root
+    group: root
+    mode: 0600
   tags:
     - swap.file.permissions
 
 - name: Format swap file
-  sudo: yes
-  command: "mkswap {{ swap_file }}"
+  shell: "mkswap {{ swap_file }}"
   when: not swap_file_check.stat.exists
   tags:
     - swap.file.mkswap
