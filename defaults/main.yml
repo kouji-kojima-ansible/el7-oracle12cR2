@@ -1,5 +1,7 @@
 #  <-- variables associated with this role
 
+swap_file_path: '/swapfile'
+
 user_oracle_home: '/home/oracle'
 
 # oracle を 暗号化 ( perl -e 'print crypt("oralce", "\$6\$SALTsalt");' )
