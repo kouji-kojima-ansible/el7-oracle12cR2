@@ -1,6 +1,6 @@
 #  <-- tasks file can include smaller files if warranted
 
-# create SWAP
+# Create SWAP
 - name: create 16GB file
   shell: dd if=/dev/zero of=/swapfile bs=1G count=16
 
@@ -30,3 +30,108 @@
     passno: '0'
     dump: '0'
     state: present
+
+# Install required package
+- name: yum install
+  yum:
+    name: "{{ item }}"
+    state: latest
+    skip_broken: yes
+  with_items:
+    - compat-libcap1.x86_64
+    - libstdc++-devel.x86_64
+    - gcc-c++.x86_64
+    - ksh.x86_64
+    - glibc-devel.x86_64
+    - libaio-devel.x86_64
+
+# Set sysctl.conf
+- name: set sysctl.conf
+  lineinfile:
+    dest: /etc/sysctl.conf
+    state: present
+    regexp: "^{{ item.key }}.*$"
+    insertafter: EOF
+    line: "{{ item.key }} = {{ item.data }}"
+  with_items:
+    - { key: fs.aio-max-nr,                data: 1048576 }
+    - { key: fs.file-max,                  data: 6815744 }
+    - { key: kernel.shmall,                data: 2097152 }
+    - { key: kernel.shmmax,                data: 4294967295 }
+    - { key: kernel.shmmni,                data: 4096 }
+    - { key: kernel.sem,                   data: 250 32000 100 128 }
+    - { key: net.ipv4.ip_local_port_range, data: 9000 65500 }
+    - { key: net.core.rmem_default,        data: 262144 }
+    - { key: net.core.rmem_max,            data: 4194304 }
+    - { key: net.core.wmem_default,        data: 262144 }
+    - { key: net.core.wmem_max,            data: 1048576 }
+    - { key: kernel.panic_on_oops,         data: 1 }
+  register: set_sysctl
+
+- name: sysctl -p
+  shell: sysctl -p
+  when:
+  - set_sysctl is changed
+
+# Set resource limit
+- name: set limits.conf
+  lineinfile:
+    dest: /etc/security/limits.conf
+    state: present
+    regexp: "^{{ item }}.*$"
+    insertbefore: '# End of file'
+    line: "{{ item }}"
+  with_items:
+    - "oracle           soft    nproc           2047"
+    - "oracle           hard    nproc           16384"
+    - "oracle           soft    nofile          1024"
+    - "oracle           hard    nofile          65536"
+    - "oracle           soft    stack           10240"
+    - "oracle           hard    stack           32768"
+
+# Create OS User Oracle
+- name: Create groups
+  group: name={{ item.group }} gid={{ item.gid }}
+  with_items:
+    - { group: oinstall,  gid: 54321 }
+    - { group: dba,       gid: 54322 }
+    - { group: oper,      gid: 54323 }
+    - { group: backupdba, gid: 54324 }
+    - { group: dgdba,     gid: 54325 }
+    - { group: kmdba,     gid: 54326 }
+    - { group: racdba,    gid: 54327 }
+
+- name: Create Oracle User
+  user:
+    name: oracle
+    uid: 1200
+    home: "{{ user_oracle_home }}"
+    group: oinstall
+    groups: wheel,dba,oper,backupdba,dgdba,kmdba,racdba
+    update_password: {{ user_oracle_pass }}
+
+- name: set sudoers
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^oracle.*$"
+    insertbefore: EOF
+    line: "oracle          ALL=(ALL)       NOPASSWD: ALL"
+
+# Create oracle install directory
+- name: create dir
+  file:
+    path: /u01/app/{{ item }}
+    state: directory
+    owner: oralce
+    group: oinstall
+  with_items:
+    - oracle
+    - oraInventory
+
+- name: chmod /u01 775
+  file:
+    path: /u01
+    mode: 0775
+    recurse: yes
+
