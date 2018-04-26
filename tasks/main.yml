@@ -1,0 +1,32 @@
+#  <-- tasks file can include smaller files if warranted
+
+# create SWAP
+- name: create 16GB file
+  shell: dd if=/dev/zero of=/swapfile bs=1G count=16
+
+- name: chmod 600 /swapfile
+  file:
+    path: '/swapfile'
+    mode: '0600'
+
+- name: file /swapfile
+  shell: file /swapfile
+  register: swap_file_test
+
+- name: mkswap /swapfile
+  shell: mkswap /swapfile
+  when: swap_file_test.stdout.find('swap file') == -1
+
+- name: swapon /swapfile
+  shell: swapon /swapfile
+  when: ansible_swaptotal_mb < 1
+
+- name: mount swap
+  mount:
+    name: swap
+    src: '/swapfile'
+    fstype: swap
+    opts: defaults
+    passno: '0'
+    dump: '0'
+    state: present
