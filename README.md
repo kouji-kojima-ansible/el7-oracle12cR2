@@ -8,6 +8,13 @@ Install role
 ansible-galaxy install kouji-kojima-ansible.el7-oracle12cR2 --force
 ```
 
+
+Dependencies
+------------
+
+kouji-kojima-ansible.el7-desktop
+
+
 Process details
 ---------------
 
