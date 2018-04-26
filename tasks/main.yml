@@ -122,7 +122,7 @@
     home: "{{ user_oracle_home }}"
     group: oinstall
     groups: wheel,dba,oper,backupdba,dgdba,kmdba,racdba
-    update_password: {{ user_oracle_pass }}
+    update_password: "{{ user_oracle_pass }}"
 
 - name: set sudoers
   lineinfile:
@@ -135,7 +135,7 @@
 # Create oracle install directory
 - name: create dir
   file:
-    path: /u01/app/{{ item }}
+    path: "/u01/app/{{ item }}"
     state: directory
     owner: oralce
     group: oinstall
