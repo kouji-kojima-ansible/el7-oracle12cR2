@@ -122,7 +122,12 @@
     home: "{{ user_oracle_home }}"
     group: oinstall
     groups: wheel,dba,oper,backupdba,dgdba,kmdba,racdba
-    update_password: "{{ user_oracle_pass }}"
+
+# set User's Pass
+- name: set oracle password
+  user:
+    name: "oracle"
+    password: "{{ user_oracle_pass }}"
 
 - name: set sudoers
   lineinfile:
