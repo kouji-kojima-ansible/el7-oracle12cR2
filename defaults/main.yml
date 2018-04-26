@@ -4,5 +4,5 @@ swap_file_path: '/swapfile'
 
 user_oracle_home: '/home/oracle'
 
-# oracle を 暗号化 ( perl -e 'print crypt("oralce", "\$6\$SALTsalt");' )
-user_oracle_pass: '$6$SALTsalt$Wf6C.nspCzMbreq7Ze8CaB.s.5YAY3fyTluGxBew1.Xp8owe8eg3pnZQTRlAdgQo1NwpJsmXlfwkPu989vQDV1'
+# oracle を 暗号化 ( perl -e 'print crypt("oracle", "\$6\$SALTsalt");' )
+user_oracle_pass: '$6$SALTsalt$AERX6.CgaeMm8.CRdmhXRfrt0bJtzSl.gwgOfWBtw5BXw.G/i4UzdKZaOguGuYAn3c7ANdkTcaSNOil..4D9C/'
