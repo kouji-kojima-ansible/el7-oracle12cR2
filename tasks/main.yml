@@ -142,7 +142,7 @@
   file:
     path: "/u01/app/{{ item }}"
     state: directory
-    owner: oralce
+    owner: oracle
     group: oinstall
   with_items:
     - oracle
