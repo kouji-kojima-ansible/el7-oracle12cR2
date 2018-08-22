@@ -1,9 +1,10 @@
-#  <-- role dependencies
 galaxy_info:
   author: kouji kojima
   description: el7-oracle12cR2
+
   Some suggested licenses:
   - Apache
+  
   license: Apache License Version 2.0
 
   min_ansible_version: 2.5.0
@@ -14,8 +15,8 @@ galaxy_info:
     - 7
 
   galaxy_tags:
-    - EL7
-    - oracle12cR2
+  - EL7
+  - oracle12cR2
 
 dependencies:
-    - kouji-kojima-ansible.el7-desktop
+- kouji-kojima-ansible.el7-desktop
